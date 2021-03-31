@@ -1,0 +1,43 @@
+{
+  "name": "auto-husky",
+  "description": "Installing husky made easy as woof!",
+  "version": "0.0.0",
+  "author": "Nicolas Goudry <goudry.nicolas@gmail.com>",
+  "bin": {
+    "auto-husky": "./bin/run"
+  },
+  "bugs": "https://github.com/g-script/auto-husky/issues",
+  "dependencies": {
+    "@oclif/command": "1.8.0",
+    "@oclif/config": "1.17.0",
+    "@oclif/plugin-help": "3.2.2"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "1.26.0",
+    "eslint": "7.23.0",
+    "eslint-config-oclif": "3.1.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/src"
+  ],
+  "homepage": "https://github.com/g-script/auto-husky",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "oclif": {
+    "bin": "auto-husky"
+  },
+  "repository": "g-script/auto-husky",
+  "scripts": {
+    "posttest": "eslint .",
+    "prepack": "oclif-dev readme",
+    "test": "echo NO TESTS",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}
