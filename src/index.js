@@ -37,9 +37,17 @@ const getAvailableManagers = async () => {
   return pkgManagers
 }
 
-const initPkg = async (pkgPath, manager, destination) => {
+const initPkg = async (pkgPath, pkgManager, destination) => {
+  const pkgManagerCommand = pkgManager === 'npm' ? 'npm' : 'yarn'
+
   if (!fs.existsSync(pkgPath)) {
-    await execa(manager, ['init', '-y'], {
+    if (pkgManager === 'yarn 2') {
+      await execa(pkgManagerCommand, ['set', 'version', 'berry'], {
+        cwd: destination,
+      })
+    }
+
+    await execa(pkgManagerCommand, ['init', '-y'], {
       cwd: destination,
     })
 
@@ -109,9 +117,8 @@ class HuskyInstallCommand extends Command {
     }
 
     const pkgPath = path.join(destination, 'package.json')
-    const pkgManagerCommand = pkgManager === 'npm' ? 'npm' : 'yarn'
 
-    await initPkg(pkgPath, pkgManagerCommand, destination)
+    await initPkg(pkgPath, pkgManager, destination)
 
     const pkgStr = await fs.promises.readFile(pkgPath, {
       encoding: 'utf8',
