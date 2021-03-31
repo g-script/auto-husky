@@ -34,7 +34,7 @@ $ npx husky-install
 
 This package can be used in fully interactive mode or by specifying some options.
 
-There is only one argument to provide: WORKINGDIRECTORY. This is the directory where command will be executed, it should point to the directory where `.git` folder is located.
+There is only one argument to provide: WORKINGDIRECTORY. This is the directory where command will be executed, it should point to the directory where `.git` folder is located. It defaults to current working directory, and supports relative paths.
 
 There is a few flags available:
 
