@@ -10,7 +10,10 @@
   "dependencies": {
     "@oclif/command": "1.8.0",
     "@oclif/config": "1.17.0",
-    "@oclif/plugin-help": "3.2.2"
+    "@oclif/plugin-help": "3.2.2",
+    "execa": "5.0.0",
+    "husky": "6.0.0",
+    "inquirer": "8.0.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "1.26.0",
