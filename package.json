@@ -36,9 +36,13 @@
   },
   "repository": "g-script/auto-husky",
   "scripts": {
-    "posttest": "eslint .",
-    "prepack": "oclif-dev readme",
-    "test": "echo NO TESTS",
-    "version": "oclif-dev readme && git add README.md"
+    "eslint": "eslint --max-warnings=0 --ignore-path=.gitignore",
+    "fix": "yarn fix:other && yarn fix:code",
+    "fix:code": "yarn test:code --fix",
+    "fix:other": "yarn test:other --write",
+    "prettier": "prettier --ignore-path=.gitignore",
+    "test": "yarn test:code && yarn test:other",
+    "test:code": "yarn eslint --ext .js .",
+    "test:other": "yarn prettier --list-different \"**/*.{json,md,yml}\""
   }
 }
