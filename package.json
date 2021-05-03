@@ -46,6 +46,7 @@
     "fix": "yarn fix:other && yarn fix:code",
     "fix:code": "yarn test:code --fix",
     "fix:other": "yarn test:other --write",
+    "lint-staged": "lint-staged",
     "postpublish": "pinst --enable",
     "prepare": "husky install && shx rm -rf .git/hooks && shx ln -s ../.husky .git/hooks",
     "prepublishOnly": "pinst --disable",
