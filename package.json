@@ -19,7 +19,9 @@
     "@oclif/dev-cli": "1.26.0",
     "eslint": "7.23.0",
     "eslint-config-oclif": "3.1.0",
-    "prettier": "2.2.1"
+    "pinst": "2.0.0",
+    "prettier": "2.2.1",
+    "shx": "0.3.3"
   },
   "engines": {
     "node": ">=10.1.0"
@@ -43,6 +45,9 @@
     "fix": "yarn fix:other && yarn fix:code",
     "fix:code": "yarn test:code --fix",
     "fix:other": "yarn test:other --write",
+    "postpublish": "pinst --enable",
+    "prepare": "husky install && shx rm -rf .git/hooks && shx ln -s ../.husky .git/hooks",
+    "prepublishOnly": "pinst --disable",
     "prettier": "prettier --ignore-path=.gitignore",
     "test": "yarn test:code && yarn test:other",
     "test:code": "yarn eslint --ext .js .",
