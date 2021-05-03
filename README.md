@@ -1,4 +1,5 @@
 <!-- omit in toc -->
+
 # auto-husky
 
 Installing husky made easy as woof! 🐶
@@ -9,6 +10,7 @@ Installing husky made easy as woof! 🐶
 [![License](https://img.shields.io/npm/l/auto-husky.svg)](https://github.com/g-script/auto-husky/blob/master/package.json)
 
 <!-- omit in toc -->
+
 ## :bookmark_tabs: Table of contents
 
 - [:floppy_disk:Installation](#floppy_diskinstallation)
@@ -28,7 +30,7 @@ Or you can run it directly with `npx`:
 $ npx husky-install
 ```
 
-## :beginner:Usage
+## :beginner: Usage
 
 This package can be used in fully interactive mode or by specifying some options.
 
@@ -37,6 +39,10 @@ There is only one argument to provide: WORKINGDIRECTORY. This is the directory w
 There is a few flags available:
 
 - **manager:** package manager to use
-- **destination:** husky custome installation directory
+- **destination:** husky custom installation directory
 - **pinst:** install and setup [pinst](https://www.npmjs.com/package/pinst) on `prepublishOnly` and `postpublish` npm lifecycle events
 - **[no-]fix-gitkraken:** automatically apply [compatibility fix for Gitkraken](https://github.com/typicode/husky/issues/875)
+
+## :1234: Versioning
+
+This project uses [SemVer](http://semver.org) for versioning. For the versions available, see the [tags on this repository](https://github.com/g-script/husky-install/tags).
