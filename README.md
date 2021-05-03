@@ -38,10 +38,10 @@ There is only one argument to provide: WORKINGDIRECTORY. This is the directory w
 
 There is a few flags available:
 
-- **manager:** package manager to use
-- **destination:** husky custom installation directory
-- **pinst:** install and setup [pinst](https://www.npmjs.com/package/pinst) on `prepublishOnly` and `postpublish` npm lifecycle events
-- **[no-]fix-gitkraken:** automatically apply [compatibility fix for Gitkraken](https://github.com/typicode/husky/issues/875)
+- _--manager_ | _-m_ : package manager to use
+- _--destination_ | _-d_ : husky custom installation directory – useful if your `package.json` is not at project root
+- _--[no-]pinst_ | _-p_ : install and setup [pinst](https://www.npmjs.com/package/pinst) on `prepublishOnly` and `postpublish` npm lifecycle events – useful if you plan to publish your package to a registry
+- _--[no-]fix-gitkraken_ : automatically apply [compatibility fix for Gitkraken](https://github.com/typicode/husky/issues/875)
 
 ## :1234: Versioning
 
