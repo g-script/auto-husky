@@ -63,14 +63,14 @@ class HuskyInstallCommand extends Command {
     let destination = flags.destination && path.resolve(args.workingDirectory, flags.destination)
     let gitkrakenFix = flags['fix-gitkraken']
 
-    checkDir(args.workingDirectory, 'Working directory is invalid (missing directory or invalid permissions)')
+    checkDir(args.workingDirectory, `Working directory is invalid (missing directory or invalid permissions): ${args.workingDirectory}`)
 
     const gitDir = path.join(args.workingDirectory, '.git')
 
     checkDir(gitDir, 'Working directory is not a Git repository')
 
     if (destination) {
-      checkDir(destination, 'Destination directory is invalid (missing directory or invalid permissions)')
+      checkDir(destination, `Destination directory is invalid (missing directory or invalid permissions): ${destination}`)
     }
 
     log(`Installing husky into ${args.workingDirectory}`)
@@ -84,7 +84,7 @@ class HuskyInstallCommand extends Command {
       message: 'Select package manager to use:',
       choices: pkgManagers,
     }, {
-      when: !pinst,
+      when: pinst === undefined,
       name: 'pinst',
       type: 'confirm',
       message: 'Use pinst (avoids postinstall errors when package is published on a registry) ?',
@@ -204,12 +204,12 @@ HuskyInstallCommand.flags = {
   }),
   pinst: oFlags.boolean({
     char: 'p',
-    description: 'install and enable pinst',
+    description: 'install and enable pinst (useful if you plan to publish your package to a registry)',
     allowNo: true,
   }),
   destination: oFlags.string({
     char: 'd',
-    description: "husky's installation directory (if different than working directory)",
+    description: "husky's installation directory if different than working directory (useful if your package.json is not at project root)",
   }),
   'fix-gitkraken': oFlags.boolean({
     description: 'automatically fix Gitkraken incompatibility with husky v5+ (see https://github.com/typicode/husky/issues/875)',
@@ -219,7 +219,7 @@ HuskyInstallCommand.flags = {
 
 HuskyInstallCommand.args = [{
   name: 'workingDirectory',
-  description: 'Directory where command will be executed',
+  description: 'Directory where .git folder is located',
   default: process.cwd(),
   parse: input => path.resolve(input),
 }]
