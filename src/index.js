@@ -8,122 +8,116 @@ const {getAvailableManagers, log} = require('./utils')
 
 const CURRENT_WORKING_DIRECTORY = process.cwd()
 
-const checkDir = (dir, error) => {
-  if (!fs.existsSync(dir)) {
-    throw new Error(error)
-  }
-}
-
-const getAvailableManagers = async () => {
-  const pkgManagers = []
-
-  await execa('npm', ['--version'])
-  .then(() => {
-    pkgManagers.push('npm')
-  })
-  .catch(() => {})
-  await execa('yarn', ['--version'])
-  .then(() => {
-    pkgManagers.push('yarn')
-    pkgManagers.push('yarn 2')
-  })
-  .catch(() => {})
-
-  if (pkgManagers.length === 0) {
-    throw new Error('No supported package manager found on your system')
-  }
-
-  return pkgManagers
-}
-
-const initPkg = async (pkgPath, pkgManager, destination) => {
-  const pkgManagerCommand = pkgManager === 'npm' ? 'npm' : 'yarn'
-
-  if (!fs.existsSync(pkgPath)) {
-    if (pkgManager === 'yarn 2') {
-      await execa(pkgManagerCommand, ['set', 'version', 'berry'], {
-        cwd: destination,
-      })
+class HuskyInstallCommand extends Command {
+  /**
+   * Check working directory exists and is a Git repository
+   * @param {String} workingDirectory Path to working directory
+   * @returns {Boolean|String} true if value is valid, error message otherwise
+   */
+  checkWorkingDirectory(workingDirectory) {
+    if (!fs.existsSync(workingDirectory)) {
+      return `Working directory is invalid (missing directory or invalid permissions): ${workingDirectory}`
     }
 
-    await execa(pkgManagerCommand, ['init', '-y'], {
-      cwd: destination,
-    })
+    const gitDir = path.join(workingDirectory, '.git')
 
-    log('Project has been initialized with defaults because no package.json was found in destination directory')
+    if (!fs.existsSync(gitDir)) {
+      return 'Working directory is not a Git repository'
+    }
+
+    return true
   }
-}
 
-class HuskyInstallCommand extends Command {
+  /**
+   * Check installation directory exists
+   * @param {String} installDirectory path to installation directory
+   * @returns {Boolean|String} true if value is valid, error message otherwise
+   */
+  checkInstallDirectory(installDirectory) {
+    if (!fs.existsSync(installDirectory)) {
+      return `Installation directory is invalid (missing directory or invalid permissions): ${installDirectory}`
+    }
+
+    return true
+  }
+
+  /**
+   * Main function
+   * @returns {void}
+   */
   async run() {
     const {args, flags} = this.parse(HuskyInstallCommand)
-    let pkgManager = flags.manager
-    let pinst = flags.pinst
-    let destination = flags.destination && path.resolve(args.workingDirectory, flags.destination)
-    let gitkrakenFix = flags['fix-gitkraken']
-
-    checkDir(args.workingDirectory, `Working directory is invalid (missing directory or invalid permissions): ${args.workingDirectory}`)
-
-    const gitDir = path.join(args.workingDirectory, '.git')
-
-    checkDir(gitDir, 'Working directory is not a Git repository')
-
-    if (destination) {
-      checkDir(destination, `Destination directory is invalid (missing directory or invalid permissions): ${destination}`)
-    }
-
-    log(`Installing husky into ${args.workingDirectory}`)
-
     const pkgManagers = await getAvailableManagers()
+    let options
 
-    await inquirer.prompt([{
-      when: !pkgManager,
-      name: 'pkgManager',
-      type: 'list',
-      message: 'Select package manager to use:',
-      choices: pkgManagers,
-    }, {
-      when: pinst === undefined,
-      name: 'pinst',
-      type: 'confirm',
-      message: 'Use pinst (avoids postinstall errors when package is published on a registry) ?',
-    }, {
-      when: !destination,
-      name: 'destination',
-      type: 'input',
-      message: 'Specify installation directory:',
-      default: args.workingDirectory,
-      filter: input => path.resolve(args.workingDirectory, input),
-      validate: input => fs.existsSync(input) || 'Invalid installation directory',
-    }]).then(answers => {
-      pkgManager = answers.pkgManager || pkgManager
-      pinst = answers.pinst || pinst
-      destination = answers.destination || destination
-    })
+    // if (destination !== args.workingDirectory) {
+    // checkDir(destination, `Destination directory is invalid (missing directory or invalid permissions): ${destination}`)
+    // }
 
-    if (gitkrakenFix === undefined) {
-      log('Due to a lack of support of core.hooksPath in Gitkraken, a custom fix is needed to make it compatible with husky 5+ (see https://github.com/typicode/husky/issues/875).')
-
+    if (flags.interactive) {
       await inquirer.prompt([{
-        when: gitkrakenFix === undefined,
+        name: 'workingDirectory',
+        type: 'input',
+        message: 'Enter working directory:',
+        default: args.workingDirectory,
+        filter: input => path.resolve(args.workingDirectory, input),
+        validate: this.checkWorkingDirectory,
+      }, {
+        name: 'destination',
+        type: 'input',
+        message: 'Enter installation directory:',
+        default: answers => path.resolve(answers.workingDirectory, flags.destination || ''),
+        filter: (input, answers) => path.resolve(answers.workingDirectory, input),
+        validate: this.checkInstallDirectory,
+      }, {
+        name: 'manager',
+        type: 'list',
+        message: 'Select package manager to use:',
+        choices: pkgManagers,
+        default: flags.manager,
+      }, {
+        name: 'pinst',
+        type: 'confirm',
+        message: 'Use pinst?',
+        default: flags.pinst,
+      }, {
         name: 'gitkrakenFix',
         type: 'confirm',
-        message: 'Apply Gitkraken fix ?',
-        default: Boolean(flags['fix-gitkraken']),
+        message: 'Apply Gitkraken fix?',
+        default: flags['fix-gitkraken'],
       }]).then(answers => {
-        gitkrakenFix = answers.gitkrakenFix
+        options = answers
       })
+    } else {
+      const wdCheck = this.checkWorkingDirectory(args.workingDirectory)
+
+      if (wdCheck !== true) {
+        throw new Error(wdCheck)
+      }
+
+      const iCheck = this.checkInstallDirectory(flags.destination)
+
+      if (iCheck !== true) {
+        throw new Error(iCheck)
+      }
+
+      options = {
+        workingDirectory: args.workingDirectory,
+        destination: (flags.destination && path.resolve(args.workingDirectory, flags.destination)) || args.workingDirectory,
+        manager: flags.manager,
+        pinst: flags.pinst,
+        gitkrakenFix: flags['fix-gitkraken'],
+      }
     }
 
-    const pkgPath = path.join(destination, 'package.json')
+    log(`Installing husky into ${options.workingDirectory}`)
 
-    await initPkg(pkgPath, pkgManager, destination)
-
-    const pkgStr = await fs.promises.readFile(pkgPath, {
+    const pkgPath = path.join(options.destination, 'package.json')
+    const pkgContent = await fs.promises.readFile(pkgPath, {
       encoding: 'utf8',
     })
-    const originalPkgIndent = /^[ ]+|\t+/m.exec(pkgStr)?.[0]
-    const pkg = JSON.parse(pkgStr)
+    const originalPkgIndent = /^[ ]+|\t+/m.exec(pkgContent)?.[0]
+    const pkg = JSON.parse(pkgContent)
 
     if (!pkg.devDependencies) {
       pkg.devDependencies = {}
@@ -131,7 +125,7 @@ class HuskyInstallCommand extends Command {
 
     pkg.devDependencies.husky = '^6.0.0'
 
-    if (gitkrakenFix) {
+    if (options.gitkrakenFix) {
       pkg.devDependencies.shx = '^0.3.3'
     }
 
@@ -139,20 +133,20 @@ class HuskyInstallCommand extends Command {
       pkg.scripts = {}
     }
 
-    const huskyDir = path.join(destination, '.husky')
+    const huskyDir = path.join(options.destination, '.husky')
     let installScript = 'husky install'
 
-    if (destination !== args.workingDirectory) {
-      installScript = `cd ${path.relative(destination, args.workingDirectory)} && husky install ${path.relative(args.workingDirectory, huskyDir)}`
+    if (options.destination !== options.workingDirectory) {
+      installScript = `cd ${path.relative(options.destination, options.workingDirectory)} && husky install ${path.relative(options.workingDirectory, huskyDir)}`
     }
 
-    if (gitkrakenFix) {
-      const relativeHooksDir = path.relative(args.workingDirectory, path.join(gitDir, 'hooks'))
+    if (options.gitkrakenFix) {
+      const relativeHooksDir = path.relative(options.destination, path.join(options.workingDirectory, '.git/hooks'))
 
-      installScript += ` && shx rm -rf ${relativeHooksDir} && shx ln -s ${path.relative(gitDir, huskyDir)} ${relativeHooksDir}`
+      installScript += ` && shx rm -rf ${relativeHooksDir} && shx ln -s ${path.relative(path.join(options.workingDirectory, '.git'), huskyDir)} ${relativeHooksDir}`
     }
 
-    if (pkgManager === 'yarn 2') {
+    if (options.manager === 'yarn 2') {
       if (pkg.scripts.postinstall) {
         pkg.scripts['postinstall:old'] = pkg.scripts.postinstall
       }
@@ -166,7 +160,7 @@ class HuskyInstallCommand extends Command {
       pkg.scripts.prepare = installScript
     }
 
-    if (pinst) {
+    if (options.pinst) {
       if (pkg.scripts.prepublishOnly) {
         pkg.scripts['prepublishOnly:old'] = pkg.scripts.prepublishOnly
       }
@@ -177,14 +171,14 @@ class HuskyInstallCommand extends Command {
 
       pkg.scripts.prepublishOnly = 'pinst --disable'
       pkg.scripts.postpublish = 'pinst --enable'
-      pkg.devDependencies.pinst = '^2.0.0'
+      pkg.devDependencies.pinst = '^2.1.6'
     }
 
     await fs.promises.writeFile(pkgPath, `${JSON.stringify(pkg, null, originalPkgIndent)}\n`)
 
     log('Successfully updated package.json')
 
-    process.chdir(args.workingDirectory)
+    process.chdir(options.workingDirectory)
     husky.install(huskyDir)
     husky.set(path.join(huskyDir, 'pre-commit'), 'npm test')
   }
