@@ -192,6 +192,10 @@ HuskyInstallCommand.flags = {
     description: 'turn on interactive mode',
     default: false,
   }),
+  destination: oFlags.string({
+    char: 'd',
+    description: "husky's installation directory if different than working directory (useful if your package.json is not at project root)",
+  }),
   manager: oFlags.string({
     char: 'm',
     description: 'package manager to use',
@@ -202,10 +206,6 @@ HuskyInstallCommand.flags = {
     char: 'p',
     description: 'install and enable pinst (useful if you plan to publish your package to a registry)',
     default: false,
-  }),
-  destination: oFlags.string({
-    char: 'd',
-    description: "husky's installation directory if different than working directory (useful if your package.json is not at project root)",
   }),
   'fix-gitkraken': oFlags.boolean({
     char: 'g',
