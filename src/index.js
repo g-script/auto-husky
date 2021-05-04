@@ -4,14 +4,14 @@ const husky = require('husky')
 const inquirer = require('inquirer')
 const path = require('path')
 
-const {getAvailableManagers, log} = require('./utils')
+const {log} = require('./utils')
 
 const CURRENT_WORKING_DIRECTORY = process.cwd()
 
 class HuskyInstallCommand extends Command {
   /**
    * Check working directory exists and is a Git repository
-   * @param {String} workingDirectory Path to working directory
+   * @param {String} workingDirectory path to working directory
    * @returns {Boolean|String} true if value is valid, error message otherwise
    */
   checkWorkingDirectory(workingDirectory) {
@@ -47,7 +47,6 @@ class HuskyInstallCommand extends Command {
    */
   async run() {
     const {args, flags} = this.parse(HuskyInstallCommand)
-    const pkgManagers = await getAvailableManagers()
     const defaultDestination = path.resolve(args.workingDirectory, flags.destination || '')
     let interactiveOptions = {}
 
@@ -67,11 +66,11 @@ class HuskyInstallCommand extends Command {
         filter: (input, answers) => path.resolve(answers.workingDirectory, input),
         validate: this.checkInstallDirectory,
       }, {
-        name: 'manager',
-        type: 'list',
-        message: 'Select package manager to use:',
-        choices: pkgManagers,
-        default: flags.manager,
+        when: flags.pinst === undefined,
+        name: 'yarn2',
+        type: 'confirm',
+        message: 'Use yarn 2 (berry)?',
+        default: Boolean(flags.yarn2),
       }, {
         when: flags.pinst === undefined,
         name: 'pinst',
@@ -104,9 +103,9 @@ class HuskyInstallCommand extends Command {
     const options = {
       workingDirectory: args.workingDirectory,
       destination: defaultDestination,
-      manager: flags.manager,
-      pinst: flags.pinst,
-      gitkrakenFix: flags['fix-gitkraken'],
+      yarn2: Boolean(flags.yarn2),
+      pinst: Boolean(flags.pinst),
+      gitkrakenFix: Boolean(flags['fix-gitkraken']),
       ...interactiveOptions,
     }
 
@@ -146,7 +145,7 @@ class HuskyInstallCommand extends Command {
       installScript += ` && shx rm -rf ${relativeHooksDir} && shx ln -s ${path.relative(path.join(options.workingDirectory, '.git'), huskyDir)} ${relativeHooksDir}`
     }
 
-    if (options.manager === 'yarn 2') {
+    if (options.yarn2) {
       if (pkg.scripts.postinstall) {
         pkg.scripts['postinstall:old'] = pkg.scripts.postinstall
       }
@@ -199,11 +198,9 @@ HuskyInstallCommand.flags = {
     char: 'd',
     description: "husky's installation directory if different than working directory (useful if your package.json is not at project root)",
   }),
-  manager: oFlags.string({
-    char: 'm',
-    description: 'package manager to use',
-    options: ['npm', 'yarn', 'yarn 2'],
-    default: 'npm',
+  yarn2: oFlags.boolean({
+    description: 'setup for yarn 2',
+    allowNo: true,
   }),
   pinst: oFlags.boolean({
     char: 'p',
