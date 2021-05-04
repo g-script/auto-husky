@@ -14,20 +14,21 @@ Installing husky made easy as woof! 🐶
 ## :bookmark_tabs: Table of contents
 
 - [:floppy_disk:Installation](#floppy_diskinstallation)
-- [:beginner:Usage](#beginnerusage)
+- [:beginner: Usage](#beginner-usage)
+- [:1234: Versioning](#1234-versioning)
 
 ## :floppy_disk:Installation
 
 You can install the package globally if you need it regularly:
 
 ```shell
-$ npm install -g husky-install
+$ npm install -g auto-husky
 ```
 
 Or you can run it directly with `npx`:
 
 ```shell
-$ npx husky-install
+$ npx auto-husky
 ```
 
 ## :beginner: Usage
@@ -45,4 +46,4 @@ There is a few flags available:
 
 ## :1234: Versioning
 
-This project uses [SemVer](http://semver.org) for versioning. For the versions available, see the [tags on this repository](https://github.com/g-script/husky-install/tags).
+This project uses [SemVer](http://semver.org) for versioning. For the versions available, see the [tags on this repository](https://github.com/g-script/auto-husky/tags).
