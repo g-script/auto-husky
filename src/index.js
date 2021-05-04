@@ -50,10 +50,6 @@ class HuskyInstallCommand extends Command {
     const pkgManagers = await getAvailableManagers()
     let options
 
-    // if (destination !== args.workingDirectory) {
-    // checkDir(destination, `Destination directory is invalid (missing directory or invalid permissions): ${destination}`)
-    // }
-
     if (flags.interactive) {
       await inquirer.prompt([{
         name: 'workingDirectory',
@@ -95,7 +91,8 @@ class HuskyInstallCommand extends Command {
         throw new Error(wdCheck)
       }
 
-      const iCheck = this.checkInstallDirectory(flags.destination)
+      const destination = path.resolve(args.workingDirectory, flags.destination || '')
+      const iCheck = this.checkInstallDirectory(destination)
 
       if (iCheck !== true) {
         throw new Error(iCheck)
@@ -103,7 +100,7 @@ class HuskyInstallCommand extends Command {
 
       options = {
         workingDirectory: args.workingDirectory,
-        destination: (flags.destination && path.resolve(args.workingDirectory, flags.destination)) || args.workingDirectory,
+        destination,
         manager: flags.manager,
         pinst: flags.pinst,
         gitkrakenFix: flags['fix-gitkraken'],
