@@ -4,7 +4,9 @@ const husky = require('husky')
 const inquirer = require('inquirer')
 const path = require('path')
 
-const {log} = require('./utils')
+const log = message => {
+  console.log(`auto-husky - ${message}`)
+}
 
 const CURRENT_WORKING_DIRECTORY = process.cwd()
 
