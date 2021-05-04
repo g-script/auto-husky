@@ -140,7 +140,7 @@ class HuskyInstallCommand extends Command {
     }
 
     if (options.gitkrakenFix) {
-      const relativeHooksDir = path.relative(options.destination, path.join(options.workingDirectory, '.git/hooks'))
+      const relativeHooksDir = path.relative(options.workingDirectory, path.join(options.workingDirectory, '.git/hooks'))
 
       installScript += ` && shx rm -rf ${relativeHooksDir} && shx ln -s ${path.relative(path.join(options.workingDirectory, '.git'), huskyDir)} ${relativeHooksDir}`
     }
