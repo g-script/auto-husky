@@ -48,7 +48,8 @@ class HuskyInstallCommand extends Command {
   async run() {
     const {args, flags} = this.parse(HuskyInstallCommand)
     const pkgManagers = await getAvailableManagers()
-    let options
+    const defaultDestination = path.resolve(args.workingDirectory, flags.destination || '')
+    let interactiveOptions = {}
 
     if (flags.interactive) {
       await inquirer.prompt([{
@@ -72,17 +73,19 @@ class HuskyInstallCommand extends Command {
         choices: pkgManagers,
         default: flags.manager,
       }, {
+        when: flags.pinst === undefined,
         name: 'pinst',
         type: 'confirm',
         message: 'Use pinst?',
-        default: flags.pinst,
+        default: Boolean(flags.pinst),
       }, {
+        when: flags['fix-gitkraken'] === undefined,
         name: 'gitkrakenFix',
         type: 'confirm',
         message: 'Apply Gitkraken fix?',
-        default: flags['fix-gitkraken'],
+        default: Boolean(flags['fix-gitkraken']),
       }]).then(answers => {
-        options = answers
+        interactiveOptions = answers
       })
     } else {
       const wdCheck = this.checkWorkingDirectory(args.workingDirectory)
@@ -91,20 +94,20 @@ class HuskyInstallCommand extends Command {
         throw new Error(wdCheck)
       }
 
-      const destination = path.resolve(args.workingDirectory, flags.destination || '')
-      const iCheck = this.checkInstallDirectory(destination)
+      const destCheck = this.checkInstallDirectory(defaultDestination)
 
-      if (iCheck !== true) {
-        throw new Error(iCheck)
+      if (destCheck !== true) {
+        throw new Error(destCheck)
       }
+    }
 
-      options = {
-        workingDirectory: args.workingDirectory,
-        destination,
-        manager: flags.manager,
-        pinst: flags.pinst,
-        gitkrakenFix: flags['fix-gitkraken'],
-      }
+    const options = {
+      workingDirectory: args.workingDirectory,
+      destination: defaultDestination,
+      manager: flags.manager,
+      pinst: flags.pinst,
+      gitkrakenFix: flags['fix-gitkraken'],
+      ...interactiveOptions,
     }
 
     log(`Installing husky into ${options.workingDirectory}`)
@@ -205,12 +208,12 @@ HuskyInstallCommand.flags = {
   pinst: oFlags.boolean({
     char: 'p',
     description: 'install and enable pinst (useful if you plan to publish your package to a registry)',
-    default: false,
+    allowNo: true,
   }),
   'fix-gitkraken': oFlags.boolean({
     char: 'g',
     description: 'automatically fix Gitkraken incompatibility with husky v5+ (see https://github.com/typicode/husky/issues/875)',
-    default: false,
+    allowNo: true,
   }),
 }
 
