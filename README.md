@@ -35,14 +35,54 @@ $ npx auto-husky
 
 This package can be used in fully interactive mode or by specifying some options.
 
-There is only one argument to provide: WORKINGDIRECTORY. This is the directory where command will be executed, it should point to the directory where `.git` folder is located. It defaults to current working directory, and supports relative paths.
+There is only one argument to provide: **WORKINGDIRECTORY**. This is the directory where command will be executed, it should point to the directory under which `.git` folder is located. It defaults to current working directory, and supports relative paths.
 
-There is a few flags available:
+There is also a few flags available:
 
-- _--manager_ | _-m_ : package manager to use
-- _--destination_ | _-d_ : husky custom installation directory – useful if your `package.json` is not at project root
-- _--[no-]pinst_ | _-p_ : install and setup [pinst](https://www.npmjs.com/package/pinst) on `prepublishOnly` and `postpublish` npm lifecycle events – useful if you plan to publish your package to a registry
-- _--[no-]fix-gitkraken_ : automatically apply [compatibility fix for Gitkraken](https://github.com/typicode/husky/issues/875)
+**`--interactive`** (`-i`)
+
+Turn on interactive mode.
+
+This option will interactively ask you questions matching following flags. You can preset all answers through matching flags, but only boolean flags will not be asked again.
+
+**`--destination`** (`-d`)
+
+Set a custom installation directory for husky.
+
+This should point to the directory where your `package.json` file is located. It defaults to working directory and must be set as relative to it.
+
+**`--[no-]yarn2`**
+
+Setup husky for yarn 2. It will use `postinstall` script rather than `prepare` script, which is not supported by yarn 2.
+
+**`--[no-]pinst`** (`-p`)
+
+Install and setup [pinst](https://www.npmjs.com/package/pinst).
+
+This option will add two scripts (`prepublishOnly` and `postpublish`) that will disable `postinstall` script when publishing your package to a registry.
+
+> **This is only useful for yarn 2 projects!**
+> It is not needed with npm or yarn because they do not use `postinstall` script to automatically install husky.
+
+**`--[no-]fix-gitkraken`** (`-g`)
+
+Automatically apply [compatibility fix for Gitkraken](https://github.com/typicode/husky/issues/875).
+
+**Examples:**
+
+```shell
+# Most common usage
+$ auto-husky
+
+# Fully interactive usage
+$ auto-husky -i
+
+# Preset some answers for interactive mode
+$ auto-husky -i --no-pinst
+
+# Usage with custom folder
+$ auto-husky -d ./custom-folder
+```
 
 ## :1234: Versioning
 
