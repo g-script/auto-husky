@@ -184,7 +184,7 @@ class HuskyInstallCommand extends Command {
 }
 
 HuskyInstallCommand.description = `Installing husky made easy as woof!
-This tool allows you to automatically install husky in several projects topology.`
+This tool allows you to automatically install husky in several project topologies.`
 
 HuskyInstallCommand.flags = {
   version: oFlags.version({char: 'v'}),
@@ -196,7 +196,7 @@ HuskyInstallCommand.flags = {
   }),
   destination: oFlags.string({
     char: 'd',
-    description: "husky's installation directory if different than working directory (useful if your package.json is not at project root)",
+    description: "husky's installation directory if different than working directory",
   }),
   yarn2: oFlags.boolean({
     description: 'setup for yarn 2',
@@ -204,7 +204,7 @@ HuskyInstallCommand.flags = {
   }),
   pinst: oFlags.boolean({
     char: 'p',
-    description: 'install and enable pinst (useful if you plan to publish your package to a registry)',
+    description: 'install and enable pinst',
     allowNo: true,
   }),
   'fix-gitkraken': oFlags.boolean({
