@@ -204,12 +204,12 @@ HuskyInstallCommand.flags = {
   }),
   pinst: oFlags.boolean({
     char: 'p',
-    description: 'install and enable pinst',
+    description: 'install and enable pinst (useful if you plan to publish your package to a registry)',
     allowNo: true,
   }),
   destination: oFlags.string({
     char: 'd',
-    description: "husky's installation directory (if different than working directory)",
+    description: "husky's installation directory if different than working directory (useful if your package.json is not at project root)",
   }),
   'fix-gitkraken': oFlags.boolean({
     description: 'automatically fix Gitkraken incompatibility with husky v5+ (see https://github.com/typicode/husky/issues/875)',
@@ -219,7 +219,7 @@ HuskyInstallCommand.flags = {
 
 HuskyInstallCommand.args = [{
   name: 'workingDirectory',
-  description: 'Directory where command will be executed',
+  description: 'Directory where .git folder is located',
   default: process.cwd(),
   parse: input => path.resolve(input),
 }]
