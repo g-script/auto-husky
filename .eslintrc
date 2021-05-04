@@ -1,3 +1,9 @@
 {
-  "extends": "oclif"
+  "parserOptions": {
+    "ecmaVersion": 2021
+  },
+  "extends": "oclif",
+  "rules": {
+    "no-template-curly-in-string": "off"
+  }
 }

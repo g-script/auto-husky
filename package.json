@@ -1,7 +1,7 @@
 {
   "name": "auto-husky",
   "description": "Installing husky made easy as woof!",
-  "version": "0.0.0",
+  "version": "0.0.0-development",
   "author": "Nicolas Goudry <goudry.nicolas@gmail.com>",
   "bin": {
     "auto-husky": "./bin/run"
@@ -10,15 +10,25 @@
   "dependencies": {
     "@oclif/command": "1.8.0",
     "@oclif/config": "1.17.0",
-    "@oclif/plugin-help": "3.2.2"
+    "@oclif/plugin-help": "3.2.2",
+    "execa": "5.0.0",
+    "husky": "6.0.0",
+    "inquirer": "8.0.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "1.26.0",
+    "@semantic-release/git": "9.0.0",
+    "conventional-changelog-conventionalcommits": "4.5.0",
     "eslint": "7.23.0",
-    "eslint-config-oclif": "3.1.0"
+    "eslint-config-oclif": "3.1.0",
+    "lint-staged": "10.5.4",
+    "pinst": "2.0.0",
+    "prettier": "2.2.1",
+    "semantic-release": "17.4.2",
+    "shx": "0.3.3"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=10.1.0"
   },
   "files": [
     "/bin",
@@ -35,9 +45,22 @@
   },
   "repository": "g-script/auto-husky",
   "scripts": {
-    "posttest": "eslint .",
-    "prepack": "oclif-dev readme",
-    "test": "echo NO TESTS",
-    "version": "oclif-dev readme && git add README.md"
+    "eslint": "eslint --max-warnings=0 --ignore-path=.gitignore",
+    "fix": "yarn fix:other && yarn fix:code",
+    "fix:code": "yarn test:code --fix",
+    "fix:other": "yarn test:other --write",
+    "lint-staged": "lint-staged",
+    "postpublish": "pinst --enable",
+    "prepare": "husky install && shx rm -rf .git/hooks && shx ln -s ../.husky .git/hooks",
+    "prepublishOnly": "pinst --disable",
+    "prettier": "prettier --ignore-path=.gitignore",
+    "release": "semantic-release",
+    "test": "yarn test:code && yarn test:other",
+    "test:code": "yarn eslint --ext .js .",
+    "test:other": "yarn prettier --list-different \"**/*.{json,md,yml}\""
+  },
+  "lint-staged": {
+    "*.js": "yarn eslint --fix",
+    "*.{json,md,yml}": "yarn prettier --write"
   }
 }
