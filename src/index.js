@@ -1,15 +1,12 @@
 const {Command, flags: oFlags} = require('@oclif/command')
-const execa = require('execa')
 const fs = require('fs')
 const husky = require('husky')
 const inquirer = require('inquirer')
 const path = require('path')
 
-const CURRENT_WORKING_DIRECTORY = process.cwd()
+const {getAvailableManagers, log} = require('./utils')
 
-const log = message => {
-  console.log(`auto-husky - ${message}`)
-}
+const CURRENT_WORKING_DIRECTORY = process.cwd()
 
 const checkDir = (dir, error) => {
   if (!fs.existsSync(dir)) {
