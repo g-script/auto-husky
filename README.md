@@ -7,7 +7,7 @@ Installing husky made easy as woof! 🐶
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/auto-husky.svg)](https://npmjs.org/package/auto-husky)
 [![Downloads/week](https://img.shields.io/npm/dw/auto-husky.svg)](https://npmjs.org/package/auto-husky)
-[![License](https://img.shields.io/npm/l/auto-husky.svg)](https://github.com/g-script/auto-husky/blob/master/package.json)
+[![License](https://img.shields.io/npm/l/auto-husky.svg)](https://github.com/g-script/auto-husky/blob/main/package.json)
 
 <!-- omit in toc -->
 
