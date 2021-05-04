@@ -63,14 +63,14 @@ class HuskyInstallCommand extends Command {
     let destination = flags.destination && path.resolve(args.workingDirectory, flags.destination)
     let gitkrakenFix = flags['fix-gitkraken']
 
-    checkDir(args.workingDirectory, 'Working directory is invalid (missing directory or invalid permissions)')
+    checkDir(args.workingDirectory, `Working directory is invalid (missing directory or invalid permissions): ${args.workingDirectory}`)
 
     const gitDir = path.join(args.workingDirectory, '.git')
 
     checkDir(gitDir, 'Working directory is not a Git repository')
 
     if (destination) {
-      checkDir(destination, 'Destination directory is invalid (missing directory or invalid permissions)')
+      checkDir(destination, `Destination directory is invalid (missing directory or invalid permissions): ${destination}`)
     }
 
     log(`Installing husky into ${args.workingDirectory}`)
