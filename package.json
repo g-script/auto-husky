@@ -1,7 +1,7 @@
 {
   "name": "auto-husky",
   "description": "Installing husky made easy as woof!",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "Nicolas Goudry <goudry.nicolas@gmail.com>",
   "bin": {
     "auto-husky": "./bin/run"
