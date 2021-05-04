@@ -17,11 +17,10 @@
   "devDependencies": {
     "@oclif/dev-cli": "1.26.0",
     "@semantic-release/git": "9.0.0",
-    "conventional-changelog-conventionalcommits": "4.5.0",
-    "eslint": "7.23.0",
+    "conventional-changelog-conventionalcommits": "4.6.0",
+    "eslint": "7.25.0",
     "eslint-config-oclif": "3.1.0",
     "lint-staged": "10.5.4",
-    "pinst": "2.0.0",
     "prettier": "2.2.1",
     "semantic-release": "17.4.2",
     "shx": "0.3.3"
@@ -49,9 +48,7 @@
     "fix:code": "yarn test:code --fix",
     "fix:other": "yarn test:other --write",
     "lint-staged": "lint-staged",
-    "postpublish": "pinst --enable",
     "prepare": "husky install && shx rm -rf .git/hooks && shx ln -s ../.husky .git/hooks",
-    "prepublishOnly": "pinst --disable",
     "prettier": "prettier --ignore-path=.gitignore",
     "release": "semantic-release",
     "test": "yarn test:code && yarn test:other",
