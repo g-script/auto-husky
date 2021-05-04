@@ -84,7 +84,7 @@ class HuskyInstallCommand extends Command {
       message: 'Select package manager to use:',
       choices: pkgManagers,
     }, {
-      when: !pinst,
+      when: pinst === undefined,
       name: 'pinst',
       type: 'confirm',
       message: 'Use pinst (avoids postinstall errors when package is published on a registry) ?',
