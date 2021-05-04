@@ -5,6 +5,8 @@ const husky = require('husky')
 const inquirer = require('inquirer')
 const path = require('path')
 
+const CURRENT_WORKING_DIRECTORY = process.cwd()
+
 const log = message => {
   console.log(`auto-husky - ${message}`)
 }
@@ -197,30 +199,37 @@ This tool allows you to automatically install husky in several projects topology
 HuskyInstallCommand.flags = {
   version: oFlags.version({char: 'v'}),
   help: oFlags.help({char: 'h'}),
+  interactive: oFlags.boolean({
+    char: 'i',
+    description: 'turn on interactive mode',
+    default: false,
+  }),
   manager: oFlags.string({
     char: 'm',
     description: 'package manager to use',
     options: ['npm', 'yarn', 'yarn 2'],
+    default: 'npm',
   }),
   pinst: oFlags.boolean({
     char: 'p',
     description: 'install and enable pinst (useful if you plan to publish your package to a registry)',
-    allowNo: true,
+    default: false,
   }),
   destination: oFlags.string({
     char: 'd',
     description: "husky's installation directory if different than working directory (useful if your package.json is not at project root)",
   }),
   'fix-gitkraken': oFlags.boolean({
+    char: 'g',
     description: 'automatically fix Gitkraken incompatibility with husky v5+ (see https://github.com/typicode/husky/issues/875)',
-    allowNo: true,
+    default: false,
   }),
 }
 
 HuskyInstallCommand.args = [{
   name: 'workingDirectory',
-  description: 'Directory where .git folder is located',
-  default: process.cwd(),
+  description: 'Directory where command is executed',
+  default: CURRENT_WORKING_DIRECTORY,
   parse: input => path.resolve(input),
 }]
 
