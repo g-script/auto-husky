@@ -34,7 +34,12 @@
   ],
   "homepage": "https://github.com/g-script/auto-husky",
   "keywords": [
-    "oclif"
+    "auto-husky",
+    "oclif",
+    "husky",
+    "git",
+    "hooks",
+    "pre-commit"
   ],
   "license": "MIT",
   "main": "src/index.js",
